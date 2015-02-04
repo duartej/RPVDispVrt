@@ -427,7 +427,7 @@ RPVDispVrtVertexer::addVertexInfo(xAOD::Vertex* newVertex,
   double vertexMassPionHypo = calcMass(tmpVTAV,139.4);
   msg(MSG::INFO)<<"NIICK masses "<<vertexMassZeroHypo<< " "<<vertexMassPionHypo<<" "<<vertexMom.M()<<endreq;
 
-  newVertex->auxdata<double>("mass") = vertexMassZeroHypo;
+  newVertex->auxdata<float>("mass") = vertexMassZeroHypo;
   newVertex->auxdata<double>("massPionHypo") = vertexMassPionHypo;
   newVertex->auxdata<int>("vtxCharge") = (int)Charge;
   newVertex->auxdata<std::vector<long int> >("trackIndices") = SelTrk;
