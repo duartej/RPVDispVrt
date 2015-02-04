@@ -1,0 +1,81 @@
+package RPVDispVrt
+
+author Claus Horn <claus.horn@cern.ch>
+
+use AtlasPolicy      AtlasPolicy-*
+use GaudiInterface   GaudiInterface-*           External
+use StoreGate        StoreGate-*                Control
+
+
+branches run
+use AthenaBaseComps             AthenaBaseComps-*               Control
+use McParticleEvent		McParticleEvent-*		PhysicsAnalysis/TruthParticleID
+use AtlasAnalysisRunTime 	AtlasAnalysisRunTime-*
+use TrkExInterfaces             TrkExInterfaces-*               Tracking/TrkExtrapolation
+##use D3PDMakerUtils              D3PDMakerUtils-*                PhysicsAnalysis/D3PDMaker
+##use AthenaPoolUtilities  AthenaPoolUtilities-*   Database/AthenaPOOL
+use DataModel DataModel-* Control 
+###use CLIDSvc CLIDSvc-* Control
+
+#
+use ITrackToVertex      ITrackToVertex-*        Reconstruction/RecoTools
+
+
+use TrkVKalVrtFitter    TrkVKalVrtFitter-*      Tracking/TrkVertexFitter
+
+use xAODTracking	xAODTracking-*          Event/xAOD
+
+
+use EventPrimitives     EventPrimitives-*	Event
+
+use TrkParameters       TrkParameters-*         Tracking/TrkEvent
+
+use TrkToolInterfaces   TrkToolInterfaces-*     Tracking/TrkTools
+
+##use Particle            Particle-*              Reconstruction
+use ParticleTruth       ParticleTruth-*         Reconstruction
+###use muonEvent		muonEvent-*	        Reconstruction/MuonIdentification
+use AtlasROOT 		AtlasROOT-* 		External
+use EventKernel 	EventKernel-*		Event
+use GeneratorObjects	GeneratorObjects-*	Generators
+use HepPDT		*			LCG_Interfaces
+use JetEvent		JetEvent-*		Reconstruction/Jet
+use ParticleEvent	ParticleEvent-*		PhysicsAnalysis/AnalysisCommon
+use TrkEventUtils	TrkEventUtils-*		Tracking/TrkEvent		
+###use egammaEvent   	egammaEvent-*		Reconstruction/egamma
+
+private
+use TrkTrackLink        TrkTrackLink-*          Tracking/TrkEvent
+use VxVertex		VxVertex-*		Tracking/TrkEvent
+use xAODJet		xAODJet-*		Event/xAOD
+###use AtlasHepMC          AtlasHepMC-* 		External
+use AthenaKernel        AthenaKernel-*		Control
+
+use TrkEventPrimitives  TrkEventPrimitives-*    Tracking/TrkEvent
+use AtlasReflex   AtlasReflex-*   External -no_auto_imports
+use TrkTrack            TrkTrack-*              Tracking/TrkEvent
+use TrkTrackSummary     TrkTrackSummary-*       Tracking/TrkEvent
+end_private
+
+
+apply_tag  ROOTBasicLibs
+apply_tag  ROOTMathLibs
+apply_tag  ROOTSTLDictLibs
+apply_tag  ROOTGraphicsLibs
+apply_tag  ROOTTableLibs
+
+
+library RPVDispVrt *.cxx components/*.cxx
+apply_pattern component_library
+
+#private
+#apply_pattern lcgdict dict=RPVDispVrt selectionfile=selection.xml \
+#                     headerfiles="../RPVDispVrt/RPVDispVrtDict.h"
+#end_private#
+#
+#apply_pattern poolcnv files="-s=${RPVDispVrt_root}/RPVDispVrt \
+#                                 RPVVrtContainer.h"
+
+apply_pattern declare_python_modules files="*.py"
+apply_pattern declare_joboptions files="*.py"
+

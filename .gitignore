@@ -1,0 +1,4 @@
+cmt/*.*sh
+cmt/Makefile
+.svn
+cmt/version.cmt

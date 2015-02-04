@@ -1,0 +1,314 @@
+2014-12-03 Max Goblirsch
+	* Added a mini alg to get the DV candidates into JiveXML
+	* Added joboptions to produce JiveXML with retracking and DV candidates
+	
+2014-07-09 Nick Barlow
+	* Add protection for null pointer in RPVVrt*DistAssociationTool to 
+	avoid rare crashes seen in production.
+	* Tag as RPVDispVrt-00-05-10
+	
+2014-06-09 Nick Barlow
+	* Remove unwanted evtMax=10 from RPVDV_postInclude.py
+	* Tag as RPVDispVrt-00-05-09
+
+2014-05-16 Nick Barlow
+	* Minor fix in RPVNtuple to get correct output filename (from RPVDispVrtFlags) when running with Reco_trf.py
+	* Tag as RPVDispVrt-00-05-08
+	
+2014-5-14 Nick Barlow, Giovanna Cottin
+	* Modify RPVDispVrtTrackSelector, tighten (default) cut on tracks, to reject tracks with zero TRT hits and <2 Pix hits
+	(was, reject tracks with zero TRT hits and zero Pix hits and pT<2GeV).
+	* Tag as RPVDispVrt-00-05-07
+
+2014-05-08 Nick Barlow
+	* Add python/RPVDispVrtFlags.py share/RPVDV_preInclude.py share/RPVDV_postInclude.py  to enable running via Reco_trf.py
+	
+
+2014-04-30 Nick Barlow
+	* Even more jet variables, ("ActiveArea" 
+	* More plots in RPVMCTruHists.
+	* Tag as RPVDispVrt-00-05-06
+
+
+2014-04-29 Nick Barlow
+	* Add more jet variables, including "rho" jet areas
+	* Tag as RPVDispVrt-00-05-04
+
+2014-03-17 Nick Barlow
+	* Reco egamma reconstruction after re-tracking by default.
+	* Add Electron, Photon, Jet, MET branches to D3PD by default.
+	* New code (from Nimrod) for electron/DV and photon/DV
+	association.
+	* Tag as RPVDispVrt-00-05-03
+
+2014-02-10 Giovanna Cottin
+	* Add Code from Julian Second Pass Vertexing
+	* Add new TRTPixpT Cut in Track Selector 
+	* Tag as RPVDispVrt-00-05-02
+
+2013-12-03 Nick Barlow
+	* Fix to RPVNtuple_muon.py for running on data
+	* Tag as RPVDispVrt-00-05-01
+
+2013-11-29 Nick Barlow
+	* Remove non-athena-based code (migrated to DVAnalysisScripts)
+	* Tag as RPVDispVrt-00-05-00
+
+2013-11-05 Nick Barlow
+	* Fix ntuple-related jobOptions for running on AOD.
+
+2013-09-03 Nick Barlow
+	* update RootCoreScripts, plotting macros, and analysis scripts 
+	to final versions used for DV+muon CONF note.
+	* Fix some memory leaks in vertexing code
+	* Tag as RPVDispVrt-00-04-04
+
+2013-07-14 Nick Barlow
+	* More updates to RootCoreScripts
+	* Tag as RPVDispVrt-00-04-03
+
+2013-06-01 Nick Barlow
+	* Updates to RootCoreScripts to use 2012 MCP recommendations and
+	efficiency weights.
+
+2013-05-24 Nick Barlow
+	* Minor changes to jobOptions to allow running on express stream
+	ESD, and MC AOD
+	* Tag as RPVDispVrt-00-04-02
+
+2013-04-22 Nick Barlow
+	* Added share/reTracking2012_topOptions.py for new re-tracking
+	recipe.
+	* Many changes to RootCoreScripts/ - additional modules, plus analysis is now blind by default.
+	* Tag as RPVDispVrt-00-04-01
+	
+	
+2013-01-30 Nick Barlow
+	* Updates for 2012 data analysis:
+	 - share/redoTracking_topOptions.py modified to work on 17.2.X.Y
+	 data+MC
+	 - RootCoreScripts/  many updates to read new data, new GRL,
+	 pileup reweighting config file, new trigger cuts, updated README.
+	* Tag as RPVDispVrt-00-04-00
+
+2012-08-22 Nick Barlow
+	* Update RootCoreScripts and analysisScripts2011, including adding
+	LIMITS/ directory with limit-setting code and instructions
+	* Tag as RPVDispVrt-00-03-09
+	
+2012-05-02 Nick Barlow
+	* Update RootCoreScripts and analysisScripts2011/
+	* Tag as RPVDispVrt-00-03-08
+	
+2012-04-06 Nick Barlow
+	* very minor change, update trigger filter
+	* Tag as RPVDispVrt-00-03-07
+
+2012-04-04 Nick Barlow
+	* add reTracking_topOptions.py
+	* Tag as RPVDispVrt-00-03-06
+	
+2012-01-09 Nick Barlow
+        * Update RootCoreScripts
+	* Tag as RPVDispVrt-00-03-05
+	
+2012-01-09 Nick Barlow
+	* Tidy up analysisScripts area - separate directories for
+	"simplified" (i.e. understandable!) version of the analysis and
+	"full" version.
+	* Tag as RPVDispVrt-00-03-04
+	
+2012-01-06 Nick Barlow
+	* Refine distance-based association between vertices and muons.
+
+2011-10-20 Nick Barlow
+	* Add option to RPVDispVrtVertexSelector to only select vertices
+	with three or more tracks.
+	* Tag as RPVDispVrt-00-03-03
+
+2011-09-20 Nick Barlow
+	* Cleanup compilation warnings, default JobOptions settings.
+	* Tag as RPVDispVrt-00-03-02
+
+2011-09-07 Nick Barlow
+	* Changes (from Ellie Dobson) to put MET into ntuple
+	* Option to only write out 3-trk vertices with m<5GeV (for
+	material map)
+	* Tag as RPVDispVrt-00-03-01
+
+2011-08-05 Nick Barlow
+	* Minor changes, mainly to truth D3PD python files, for release 17
+	* Tag as RPVDispVrt-00-03-00
+
+2011-04-29 Nick Barlow
+        * Enable eta-dependent random killing of tracks
+	* Tag as RPVDispVrt-00-02-31
+
+2011-04-29 Nick Barlow
+	* Add property to RPVDispVrtTrackSelector to enable random killing
+	of tracks
+	* Tag as RPVDispVrt-00-02-30
+
+2011-04-05 Nick Barlow
+	* Add RPVVrtMuonDistAssociationTool - alternative way of
+	associating muons and vertices
+
+2011-04-01 Nick Barlow
+	* Add option to change d0 calculation to use TrackToVertexTool.
+	* Tag as RPVDispVrt-00-02-29
+	
+2011-02-04 Nick Barlow
+	* minor change in RPVNtuple_jobOptions.py to 
+	keep up with changes to EventInfoD3PDObject
+	* Tag as RPVDispVrt-00-02-28
+	
+2011-01-27 Nick Barlow
+	* Add RPVFilter_jobOptions.py to enable preFiltering.
+	* Add analysisScripts/ directory and some pyROOT macros.
+	* Tag as RPVDispVrt-00-02-27
+
+2010-11-22 Nick Barlow
+	* Add "doLightweight" option to RPVNtuple_jobOptions, to just dump 
+	dispVtx and primary vtx information, for running over large
+	samples.
+	* Tag as RPVDispVrt-00-02-26
+
+2010-11-18 Nick Barlow
+	* Changes to RPVDispVrt and RPVDispVrtTrackSelector to look at all
+	primary vertices in the event for track selection
+	* Tag as RPVDispVrt-00-02-25
+	
+2010-11-02 Nick Barlow
+	* Changes to RPVDispVrt.cxx so that muons with d0<2mm can be used
+	in vertices
+	* Some cleanup in RPVDispVrtVertexer
+	* Tag as RPVDispVrt-00-02-24
+
+2010-09-27 Nick Barlow
+	* Minor additions to trk ntuple block
+	* Tag as RPVDispVrt-00-02-23
+
+2010-09-21 Nick Barlow
+	* Add beamspot variables to ntuple, and add RPVNtuple_trigger.py
+	to allow specific trigger bits to go into ntuple
+	* Tag as RPVDispVrt-00-00-22
+
+2010-09-06 Nick Barlow
+	* Add "disassembleVertex" functionality, remove worst track from
+	vertices with high chisq. (missing function found when comparing
+	with VrtSecInclusive).
+	* Tag as RPVDispVrt-00-02-21
+
+2010-08-26 Nick Barlow
+	* Add function to RPVVrt to get vertex mass using pion mass
+	hypothesis for tracks.
+	* Add mcTrk->trk matching
+	* Tag as RPVDispVrt-00-02-20
+	
+2010-08-10 Nick Barlow
+	* More options for final vertex merging
+	* Tag as RPVDispVrt-00-02-19
+
+2010-08-10 Nick Barlow
+	* Add option to RPVDispVrt to randomize the order of tracks in
+	selectedTrkColl
+	* Tag as RPVDispVrt-00-02-18
+
+2010-08-03 Nick Barlow
+	* Add RPVVrtMuonAssociationTool to go from vertices to muons
+	* Avoid replacing indet tracks with muon tracks in RPVDispVrt to
+	fix dispVtx_trk_index=-1 problem.
+	* Tag as RPVDispVrt-00-02-17
+
+2010-07-15 Nick Barlow
+	* More minor fixes
+	* Tag as RPVDispVrt-00-02-16
+
+2010-07-06 Nick Barlow
+	* fix src/components/RPVDispVrt_entries.cxx
+	* tag as RPVDispVrt-00-02-14
+
+2010-07-06 Nick Barlow
+	* revert some jet changes for short term
+	* tag as RPVDispVrt-00-02-13
+
+2010-07-04 Loh, Chang Wei
+	* Initialized RPVDispVrtJet. 
+	* Tracking and vertexing selections (for conference) 
+	in RPVVertexing_jobOptions.py
+	* Tag as RPVDispVrt-00-02-12
+
+2010-06-23 Nick Barlow
+	* Comment out VKalGetFullCov call in RPVDispVrtVertexer.cxx, as
+	this crashes when doing re-tracking in the same job.
+	* Tag as RPVDispVrt-00-02-11
+
+2010-06-21 Arik Kreisel
+	* add to debugNtuple, position of vertexes from RPVDispVrt and momentum of the tracks
+	      associated with them. 
+	* Tag as RPVDispVrt-00-02-10
+
+2010-06-07 Nick Barlow
+	* Add jet block, turned off by default,
+	* Reduce number of particles written to "mc" block
+	* Tag as RPVDispVrt-00-02-09
+
+2010-06-06 Nick Barlow
+	* muon<-->truth and muon<-->track associations,
+	* vertex->truth association
+	* some python cleanup
+	* Tag as RPVDispVrt-00-02-08
+
+2010-06-02 Nick Barlow
+	* Add lots of truth association stuff.
+
+2010-05-29 Loh,Chang Wei
+	* Vertexing change on vertex-vertex distance
+	* Initialize PerformanceAnalysis
+	* Tag as RPVDispVrt-00-02-07
+	
+2010-05-27 Arik Kreisel
+	* Add muon SA tracks to track collection. Add vector vtxHasMuon 
+	   which is 1 for vertex with muon and zero for vertex without.
+	* Tag as RPVDispVrt-00-02-06
+	
+2010-05-27 Nick Barlow
+	* Add muon info to ntuple, add capability to make "debug" ntuple
+	with variables filled directly from vertexing code
+	* Tag as RPVDispVrt-00-02-05
+	
+2010-05-26 Nick Barlow
+	* Turn off vertex purity stuff that was crashing with sec vertices
+
+2010-05-24 Loh, Chang Wei
+	* Added line in Cleanup
+	* Modified mergeFinalVertices
+	* Fix bug if no muon-vertex found
+	* Tag as RPVDispVrt-00-02-04
+
+2010-05-23 Arik Kreisel
+	* Added Muons  
+	* Bug-fixes
+	* Tag as RPVDispVrt-00-02-03
+
+2010-05-21 Nick Barlow
+	* Many bugfixes - should now replicate old versions of code OK
+	* Added autoconfiguration to jobOptions
+	* Tag as RPVDispVrt-00-02-02
+
+2010-05-17 Nick Barlow
+	* Debug, cross-check with older working version of code
+	* tag as RPVDispVrt-00-02-01
+	
+2010-04-22 Nick Barlow
+	* Major restructuring, and add D3PDMaker stuff, new RPVVrt vertex
+	class
+	* Code currently runs, produces ntuple, but VertexCleanup stuff
+	not yet copied/debugged from old version.
+	* Tag as RPVDispVrt-00-02-00
+	
+2010-03-31 Nick Barlow
+	* fix cmt/requirements RPVDispVrt_entries, RPVDispVrtTrackSelector
+	so that the RPVDispVrt algorithm works with algtools
+	* tag as RPVDispVrt-00-01-03
+	
