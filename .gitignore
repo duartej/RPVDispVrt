@@ -2,3 +2,5 @@ cmt/*.*sh
 cmt/Makefile
 .svn
 cmt/version.cmt
+*x86_64-slc6-gcc*
+genConf

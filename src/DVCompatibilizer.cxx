@@ -1,10 +1,12 @@
 #include "RPVDispVrt/DVCompatibilizer.h"
-#include "RPVDispVrt/RPVDispVrt.h"
+//#include "RPVDispVrt/RPVVrt.h"
+#include "xAODTracking/Vertex.h"
+#include "xAODTracking/VertexContainer.h"
 #include "RPVDispVrt/RPVDispVrtTrackSelector.h"
 #include "RPVDispVrt/RPVDispVrtVertexer.h"
 #include "RPVDispVrt/RPVDispVrtVertexCleanup.h"
 #include "RPVDispVrt/RPVDispVrtVertexSelector.h"
-#include "RPVDispVrt/RPVDispVrtSecondPass.h"
+//#include "RPVDispVrt/RPVDispVrtSecondPass.h"
 #include "TTree.h"
 
 /// --------------------------------------------------------------------
@@ -36,7 +38,8 @@ StatusCode DVCompatibilizer::execute() {
   msg(MSG::DEBUG)<<"in DVCompatibilizer::execute()"<<endreq;
 
 
-  RPVVrtContainer* in(0);
+  //RPVVrtContainer* in(0);
+  xAOD::VertexContainer * in = 0;
   StatusCode sc = evtStore()->retrieve(in,m_inputVertices);
   if (sc.isFailure())
     msg(MSG::ERROR)<<"Failed to retrieve input vertex collection "<<m_inputVertices<<endreq;
@@ -48,26 +51,25 @@ StatusCode DVCompatibilizer::execute() {
   }
 
   /// create output container
-  VxContainer* out = new VxContainer();
+  xAOD::VertexContainer* out = new xAOD::VertexContainer();
 
   // now clone our vertices
-
-  RPVVrtContainer::iterator vIt = in->begin();
-  RPVVrtContainer::iterator vEnd = in->end();
+  xAOD::VertexContainer::iterator vIt = in->begin();
+  xAOD::VertexContainer::iterator vEnd = in->end();
 
   for (; vIt != vEnd; ++vIt){
-    Trk::VxCandidate* cand = *vIt;
-    Trk::VxCandidate* vx = new Trk::VxCandidate(*cand);
-    vx->setVertexType(Trk::SecVtx);
+    xAOD::Vertex* cand = *vIt;
+    xAOD::Vertex* vx = new xAOD::Vertex(*cand);
+    vx->setVertexType(xAOD::VxType::VertexType::SecVtx);
     out->push_back(vx);
   }
 
 
   sc = evtStore()->record(out,m_outputVertices);
   if (sc.isFailure()) {
-    msg(MSG::ERROR)<<"Failed to record VxCandidate collection made from RPVVrtContainer"<<endreq;
+    msg(MSG::ERROR)<<"Failed to record VertexCandidate collection made from xAOD::VertexContainer"<<endreq;
   } else {
-    msg(MSG::DEBUG)<<"Recording VxCandidate collection made from RPVVrtContainer with "<<out->size()<<" vertices"<<endreq;
+    msg(MSG::DEBUG)<<"Recording VertexCandidate collection made from xAOD::VertexContainer with "<<out->size()<<" vertices"<<endreq;
   }
   return StatusCode::SUCCESS;
 }
