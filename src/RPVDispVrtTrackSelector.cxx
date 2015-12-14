@@ -107,54 +107,56 @@ bool RPVDispVrtTrackSelector::decision(const xAOD::TrackParticle& track,const xA
   if(m_TRTPixCut){
     if(!passesTRTPixCut(track)) return false;
   }
-
-    uint8_t nPix = 0;
-    bool gotPix = track.summaryValue(nPix,xAOD::numberOfPixelHits);
-    if (!gotPix) {
-      msg(MSG::WARNING)<<"couldn't retrieve nPix"<<endreq;
-    }
-    uint8_t nSCT = 0;
-    bool gotSCT = track.summaryValue(nSCT,xAOD::numberOfSCTHits);
-    if (!gotSCT) {
-      msg(MSG::WARNING)<<"couldn't retrieve nSCT"<<endreq;
-    }
-    uint8_t nTRT = 0;
-    bool gotTRT = track.summaryValue(nTRT,xAOD::numberOfTRTHits);
-    if (!gotTRT) {
-      msg(MSG::WARNING)<<"couldn't retrieve nTRT"<<endreq;
-    }
-    uint8_t nBLayer = 0;
-    bool gotBLayer = track.summaryValue(nBLayer,xAOD::numberOfBLayerHits);
-    if (!gotBLayer) {
-      msg(MSG::WARNING)<<"couldn't retrieve nBLayer"<<endreq;
-    }
-
-    uint8_t nPixSharedHits = 0;
-    bool gotPixSharedHits = track.summaryValue(nPixSharedHits,xAOD::numberOfPixelSharedHits);
-    if (!gotPixSharedHits) {
-      msg(MSG::WARNING)<<"couldn't retrieve nPixSharedHits"<<endreq;
-    }
-
-    uint8_t nSCTSharedHits = 0;
-    bool gotSCTSharedHits = track.summaryValue(nSCTSharedHits,xAOD::numberOfSCTSharedHits);
-    if (!gotSCTSharedHits) {
-      msg(MSG::WARNING)<<"couldn't retrieve nSCTSharedHits"<<endreq;
-    }
-
-    uint8_t nPixHoles = 0;
-    bool gotPixHoles = track.summaryValue(nPixHoles,xAOD::numberOfPixelHoles);
-    if (!gotPixHoles) {
-      msg(MSG::WARNING)<<"couldn't retrieve nPixHoles"<<endreq;
-    }
-
-
-    msg(MSG::INFO)<<"Numbers of hits "<<(int)nPix<<" "<<(int)nSCT<<" "<<(int)nTRT<<" "<<(int)nPixSharedHits<<" "<<(int)nSCTSharedHits<<" "<<(int)nPixHoles<<endreq;
+  
+  uint8_t nPix = 0;
+  bool gotPix = track.summaryValue(nPix,xAOD::numberOfPixelHits);
+  if (!gotPix) {
+    msg(MSG::WARNING)<<"couldn't retrieve nPix"<<endreq;
+  }
+  uint8_t nSCT = 0;
+  bool gotSCT = track.summaryValue(nSCT,xAOD::numberOfSCTHits);
+  if (!gotSCT) {
+    msg(MSG::WARNING)<<"couldn't retrieve nSCT"<<endreq;
+  }
+  uint8_t nTRT = 0;
+  bool gotTRT = track.summaryValue(nTRT,xAOD::numberOfTRTHits);
+  if (!gotTRT) {
+    msg(MSG::WARNING)<<"couldn't retrieve nTRT"<<endreq;
+  }
+  uint8_t nBLayer = 0;
+  bool gotBLayer = track.summaryValue(nBLayer,xAOD::numberOfBLayerHits);
+  if (!gotBLayer) {
+    msg(MSG::WARNING)<<"couldn't retrieve nBLayer"<<endreq;
+  }
+  
+  uint8_t nPixSharedHits = 0;
+  bool gotPixSharedHits = track.summaryValue(nPixSharedHits,xAOD::numberOfPixelSharedHits);
+  if (!gotPixSharedHits) {
+    msg(MSG::WARNING)<<"couldn't retrieve nPixSharedHits"<<endreq;
+  }
+  
+  uint8_t nSCTSharedHits = 0;
+  bool gotSCTSharedHits = track.summaryValue(nSCTSharedHits,xAOD::numberOfSCTSharedHits);
+  if (!gotSCTSharedHits) {
+    msg(MSG::WARNING)<<"couldn't retrieve nSCTSharedHits"<<endreq;
+  }
+  
+  uint8_t nPixHoles = 0;
+  bool gotPixHoles = track.summaryValue(nPixHoles,xAOD::numberOfPixelHoles);
+  if (!gotPixHoles) {
+    msg(MSG::WARNING)<<"couldn't retrieve nPixHoles"<<endreq;
+  }
     
-
+  msg(MSG::INFO)<<"(nPix, nSCT, nTRT, nPixSharedHits, nSCTSharedHits, nPixHoles) = (" 
+		<<Form(" %02d,",(int)nPix)
+		<<Form(" %02d,",(int)nSCT)
+		<<Form(" %02d,",(int)nTRT)
+		<<Form(" %02d,",(int)nPixSharedHits)
+		<<Form(" %02d,",(int)nSCTSharedHits)
+		<<Form(" %02d",(int)nPixHoles)<<" )"<<endreq;
+  
   if (track.pt() < m_TrkPtCut) return false;
   if (track.chiSquared() / track.numberDoF() > m_TrkChi2Cut) return false;
-  
-
   if ((int)nPix < m_CutPixelHits) return false;
   if ((int)nSCT < m_CutSctHits) return false;
   if ((int)nBLayer < m_CutBLayHits) return false;
@@ -162,12 +164,9 @@ bool RPVDispVrtTrackSelector::decision(const xAOD::TrackParticle& track,const xA
   if ((int)nPix + (int)nSCT < m_CutSiliconHits) return false;
   if ((int)nPixHoles >  m_CutPixelHoles) return false;
   
- 
-
   if (fabs(d0) < m_DstFromBeamCut) return false;
   /// if it got to here, it passed all cuts.
   return true;
-
   
 }
 

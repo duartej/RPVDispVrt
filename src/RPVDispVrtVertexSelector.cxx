@@ -1,6 +1,5 @@
 #include "RPVDispVrt/RPVDispVrtVertexSelector.h"
 #include "TrkTrackSummary/TrackSummary.h"
-
 #include <iostream>
 
 //constructor
@@ -49,7 +48,6 @@ bool RPVDispVrtVertexSelector::goodTwoTrackVertex(const std::vector<const xAOD::
 						  const AmgVector(3)& vertexPosition,
 						  const TLorentzVector& vertexMomentum,
 						  const double chi2) {
-
   if (chi2 > m_vtxChi2Cut) {
     return false;
   }
@@ -62,9 +60,7 @@ bool RPVDispVrtVertexSelector::goodTwoTrackVertex(const std::vector<const xAOD::
 //from VrtSecInclusive 
 bool RPVDispVrtVertexSelector::hitBasedFakeVertex(const std::vector<const xAOD::TrackParticle*>& trackVec, 
 						  const AmgVector(3)& vertex) {
-
   return false;
-  
 
   if (trackVec.size() !=2) return true;
   const Trk::TrackSummary* trkiSum = trackVec[0]->track()->trackSummary();

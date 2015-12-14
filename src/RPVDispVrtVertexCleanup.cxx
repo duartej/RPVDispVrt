@@ -57,11 +57,8 @@ RPVDispVrtVertexCleanup::cleanupVertices(xAOD::VertexContainer* vertices,
 					 const xAOD::TrackParticleContainer* trkColl) 
 {  
   StatusCode sc = StatusCode::SUCCESS;
-  
-  
-
   if (m_disassembleVertices) {
-/// "disassemble" vertices with bad chisq:
+    /// "disassemble" vertices with bad chisq:
     sc = disassembleVertices(vertices,trkColl);
     if (sc.isFailure()) msg(MSG::ERROR)<<"Failed to disassemble vertices"<<endreq;  
   }
@@ -70,7 +67,7 @@ RPVDispVrtVertexCleanup::cleanupVertices(xAOD::VertexContainer* vertices,
   sc = classifyTracks(vertices, trkInVrt);
   if (sc.isFailure()) msg(MSG::ERROR)<<"Failed to classify tracks"<<endreq;
 
-  msg(MSG::DEBUG)<<"Number of vertices before cleanup/merge is "<<vertices->size()<<endreq;
+  //  msg(MSG::DEBUG)<<"Number of vertices before cleanup/merge is "<<vertices->size()<<endreq;
 
   double FoundMax=999999999.; 
   long int SelectedTrack=-1;
@@ -81,10 +78,11 @@ RPVDispVrtVertexCleanup::cleanupVertices(xAOD::VertexContainer* vertices,
   /// iteratively find the shared track with the highest chisq to a particular vertex:
 
   while((FoundMax=maxOfShared( vertices, trkInVrt, SelectedTrack, SelectedVertex))>0) {
-
+    msg(MSG::INFO)<<"MaxOfChisq = "<<FoundMax<<" (Track, Vertex) = ( "<<SelectedTrack <<", "<< SelectedVertex<<" )"<<endreq;
     foundMinVrtDst = 1000000.;
     if(FoundMax<m_TrackDetachCut) {
       foundMinVrtDst = minVrtVrtSig( vertices, foundV1, foundV2);
+      msg(MSG::INFO)<<"MinVrtDst  = "<<foundMinVrtDst<< " ( vrt1, vrt2 ) = ( "<<foundV1<<", "<<foundV2<<" )"<<endreq;
     }
     if ((FoundMax<m_TrackDetachCut)&&(foundMinVrtDst < m_VertexMergeCut)) {
       sc = mergeAndRefitVertices(vertices, foundV1, foundV2, trkColl);
@@ -101,14 +99,13 @@ RPVDispVrtVertexCleanup::cleanupVertices(xAOD::VertexContainer* vertices,
       } //end of while nextvrt
 
       StatusCode sc = classifyTracks(vertices, trkInVrt);
-      
       if (sc.isFailure()) msg(MSG::ERROR)<<"Failed to classify tracks second time round"<<endreq;
-
+      
     } else {
       removeTrackFromVertex(vertices, SelectedTrack, SelectedVertex);
       //      vertices->at(SelectedVertex) = m_vtxTool->refitVertex(vertices->at(SelectedVertex),trkColl);
       m_vtxTool->refitVertex(vertices->at(SelectedVertex),trkColl);
-
+      
       sc = classifyTracks(vertices, trkInVrt);
       if (sc.isFailure()) msg(MSG::ERROR)<<"Failed to classify tracks after track removal"<<endreq;
     }
@@ -134,7 +131,6 @@ StatusCode
 RPVDispVrtVertexCleanup::disassembleVertices(xAOD::VertexContainer* vertices, 
 					     const xAOD::TrackParticleContainer* trkColl) {
 
-  
   std::vector<const xAOD::TrackParticle*>  ListBaseTracks;
   std::vector<long int> SelTrk;
 
@@ -142,20 +138,29 @@ RPVDispVrtVertexCleanup::disassembleVertices(xAOD::VertexContainer* vertices,
   xAOD::VertexContainer::iterator vEnd = vertices->end();
 
   for (unsigned int iv=0; iv<vertices->size(); ++iv) {
-    if ((vertices->at(iv))->chiSquared() < m_disassembleChi2Cut*(vertices->at(iv))->auxdata<std::vector<long int> >("trackIndices").size())
+    msg(MSG::INFO)<<"Vertex "<<iv<<" : Before disassemble "<<vertices->at(iv)->auxdata<std::vector<long int> >("trackIndices") <<endreq;  
+    if ((vertices->at(iv))->chiSquared() < m_disassembleChi2Cut*(vertices->at(iv))->auxdata<std::vector<long int> >("trackIndices").size()){
+      msg(MSG::INFO)<<"Vertex "<<iv<<" : reasonable chiSquared --> No disassemble"<< endreq;  
       continue;
+    }
     //// OK now remove the worst track from the bad vertex
     int NTrk=(vertices->at(iv))->auxdata<std::vector<long int> >("trackIndices").size();
-    if (NTrk < 3) continue;
+    if (NTrk < 3){
+      msg(MSG::INFO)<<"Vertex "<<iv<<" : large chiSquared, but Ntrk = "<<NTrk<<" --> No disassemble" <<endreq;  
+      continue;
+    }
     long int SelT=-1;
     double Chi2Max=0.;
     for(int i=0; i<NTrk; i++){
       if( (vertices->at(iv))->auxdata<std::vector<double> >("chi2ForTrack").at(i) > Chi2Max) { 
-      Chi2Max=(vertices->at(iv))->auxdata<std::vector<double> >("chi2ForTrack").at(i);
+	Chi2Max=(vertices->at(iv))->auxdata<std::vector<double> >("chi2ForTrack").at(i);
 	SelT=i;
       }
     }	    
-    if(SelT==-1) continue;    
+    if(SelT==-1) {
+      msg(MSG::INFO)<<"Vertex "<<iv<<" : large chiSquared, and Ntrk = "<<NTrk<<" ,but no too large chi2ForTrack --> No disassemble" <<endreq;  
+      continue;    
+    }
     for(int i=0; i<NTrk; i++) {
       if(i==SelT)continue;
       ListBaseTracks.clear();
@@ -168,10 +173,11 @@ RPVDispVrtVertexCleanup::disassembleVertices(xAOD::VertexContainer* vertices,
       xAOD::Vertex* newVertex = m_vtxTool->makeVertex(ListBaseTracks,SelTrk,trkColl);
       if (newVertex != 0)
 	vertices->push_back(newVertex);
-
     } ///end of loop over tracks
+    msg(MSG::INFO)<<"Vertex "<<iv<<" : After disassemble "<<vertices->at(iv)->auxdata<std::vector<long int> >("trackIndices") <<endreq;  
     long int selv = iv;
     removeTrackFromVertex(vertices,(vertices->at(iv))->auxdata<std::vector<long int> >("trackIndices").at(SelT),selv);
+    msg(MSG::INFO)<<"Vertex "<<iv<<" : After removeTrack "<<vertices->at(iv)->auxdata<std::vector<long int> >("trackIndices") <<endreq;  
     m_vtxTool->refitVertex(vertices->at(iv),trkColl);
 
   } ///end of loop over vertices
@@ -179,23 +185,26 @@ RPVDispVrtVertexCleanup::disassembleVertices(xAOD::VertexContainer* vertices,
   return StatusCode::SUCCESS;
 }
 
-
-
 void 
 RPVDispVrtVertexCleanup::removeTrackFromVertex(xAOD::VertexContainer* vertices, 
 					       long int & SelectedTrack,
 					       long int & SelectedVertex) {
+
+  //  msg(MSG::INFO)<<"Before removal  "<<(vertices->at(SelectedVertex))->auxdata<std::vector<long int> >("trackIndices").size()<<endreq;
   
   for (unsigned int i=0; i< (vertices->at(SelectedVertex))->auxdata<std::vector<long int> >("trackIndices").size(); ++i) {
     if ((vertices->at(SelectedVertex))->auxdata<std::vector<long int> >("trackIndices").at(i)==SelectedTrack) {
 
       std::vector<long int>::iterator trkIndexIt = (vertices->at(SelectedVertex))->auxdata<std::vector<long int> >("trackIndices").begin() + i;
       (vertices->at(SelectedVertex))->auxdata<std::vector<long int> >("trackIndices").erase(trkIndexIt);
-      std::vector<Trk::VxTrackAtVertex>::iterator trkIt = (vertices->at(SelectedVertex))->vxTrackAtVertex().begin() + i;
-      (vertices->at(SelectedVertex))->vxTrackAtVertex().erase(trkIt);
+      msg(MSG::INFO)<<"After removeTrackFromVertex "<<SelectedVertex <<" "<<vertices->at(SelectedVertex)->auxdata<std::vector<long int> >("trackIndices") <<endreq;
+      //!      std::vector<Trk::VxTrackAtVertex>::iterator trkIt = (vertices->at(SelectedVertex))->vxTrackAtVertex().begin() + i;
+      //!      (vertices->at(SelectedVertex))->vxTrackAtVertex().erase(trkIt);
     }
   }
   
+  //  msg(MSG::INFO)<<"After removal  "<<(vertices->at(SelectedVertex))->auxdata<std::vector<long int> >("trackIndices").size()<<endreq;
+
   return;
 }
 
@@ -216,7 +225,11 @@ RPVDispVrtVertexCleanup::classifyTracks(xAOD::VertexContainer* inputVertices,
       trkInVrt.at(tracknum).push_back(iv);
     }
   }
-  
+
+  //  for (unsigned int i=0; i<trkInVrt.size(); ++i) {
+  //    msg(MSG::INFO)<<"    Track "<<i<<" : classifyTracks"<< trkInVrt.at(i) <<endreq;
+  //  }
+
   return StatusCode::SUCCESS;
 }
 
@@ -225,7 +238,6 @@ RPVDispVrtVertexCleanup::maxOfShared(xAOD::VertexContainer* vertices,
 				     std::vector<std::vector<long int > >& trkInVrt,
 				     long int & SelectedTrack,
 				     long int & SelectedVertex) {
-
   
   long int NTrack=trkInVrt.size(); long int it, jv, itmp, NVrt, VertexNumber;
  
@@ -236,8 +248,8 @@ RPVDispVrtVertexCleanup::maxOfShared(xAOD::VertexContainer* vertices,
     NVrt=(trkInVrt)[it].size();         ///Number of vertices for this track
     if(  NVrt > NShMax ) NShMax=NVrt;
   }
-if(NShMax<=1) return MaxOf;              /// No shared tracks
-    
+  if(NShMax<=1) return MaxOf;              /// No shared tracks
+  
   for( it=0; it<NTrack; it++) {    
     NVrt=trkInVrt[it].size();         //// Number of vertices for this track
     if(  NVrt < NShMax )    {
@@ -395,7 +407,6 @@ RPVDispVrtVertexCleanup::VrtVrtDist(const xAOD::Vertex* vrt1, const xAOD::Vertex
   double distx =  vrt1->position().x()- vrt2->position().x();
   double disty =  vrt1->position().y()- vrt2->position().y();
   double distz =  vrt1->position().z()- vrt2->position().z();
-  
 
   const AmgSymMatrix(3) posErr1 = vrt1->covariancePosition();
   const AmgSymMatrix(3) posErr2 = vrt2->covariancePosition();
@@ -467,19 +478,26 @@ RPVDispVrtVertexCleanup::mergeAndRefitVertices(xAOD::VertexContainer* vertices,
 					       int & V1, int & V2,
 					       const xAOD::TrackParticleContainer* trkColl) {
 
+  //  std::cout<<"helllloooo "<<(vertices->at(V2))->vxTrackAtVertex().size()<<std::endl;
+  //  int nth=(vertices->at(V2))->vxTrackAtVertex().size();   //number of tracks in second vertex     // !!!
+
+  //  int nth = (vertices->at(V2))->vxTrackAtVertex().size();   //number of tracks in second vertex     // !!!
   
-  int nth=(vertices->at(V2))->vxTrackAtVertex().size();   //number of tracks in second vertex
-    
+  
   std::vector<long int> v1Indices = vertices->at(V1)->auxdata<std::vector<long int> >("trackIndices");
   std::vector<long int> v2Indices = vertices->at(V2)->auxdata<std::vector<long int> >("trackIndices");
-  
-  for(long int i=0;i<nth;i++) {
+
+  //  for(long int i=0;i<nth;i++) {
+  for(long int i=0;i<v2Indices.size();i++) {
     if (std::find(v1Indices.begin(),v1Indices.end(),v2Indices.at(i))==v1Indices.end()) {
-      (vertices->at(V1))->vxTrackAtVertex().push_back(*(vertices->at(V2)->vxTrackAtVertex().at(i).clone()));
+      //      (vertices->at(V1))->vxTrackAtVertex().push_back(*(vertices->at(V2)->vxTrackAtVertex().at(i).clone()));
       (vertices->at(V1))->auxdata<std::vector<long int> >("trackIndices").push_back(v2Indices.at(i));
     }
   }
-  std::sort( (vertices->at(V1))->auxdata<std::vector<long int> >("trackIndices").begin(),(vertices->at(V1))->auxdata<std::vector<long int> >("trackIndices").end() );
+  
+  std::sort( (vertices->at(V1))->auxdata<std::vector<long int> >("trackIndices").begin(),
+	     (vertices->at(V1))->auxdata<std::vector<long int> >("trackIndices").end() );
+  
 
   vertices->at(V2)->auxdata<std::vector<long int> >("trackIndices").clear();
   vertices->at(V2)->auxdata<int>("numCloseVtx") = 0;

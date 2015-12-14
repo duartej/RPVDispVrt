@@ -84,18 +84,19 @@ class RPVDispVrtVertexer : virtual public IAlgTool, virtual public AthAlgTool {
     
     void addVertexInfo(xAOD::Vertex*, 
 		       const xAOD::TrackParticleContainer* trkColl,
-		       vector<const xAOD::TrackParticle*>  ListBaseTracks,
+		       vector<const xAOD::TrackParticle*>  &ListBaseTracks,
 		       AmgVector(3) vertex,
 		       TLorentzVector  vertexMom,
 		       long int Charge,
 		       std::vector<double> vertexCov,
 		       std::vector<double> Chi2PerTrk,
 		       std::vector< vector<double> > TrkAtVrt,
-		       double Chi2,
-		       double Ndf,
+		       //		       double Chi2,
+		       //		       double Ndf,
 		       vector<long int> SelTrk);
 
-    double calcMass(std::vector<Trk::VxTrackAtVertex* >* vtxTracks, double trkMass) ;
+    //    double calcMass(std::vector<Trk::VxTrackAtVertex* >* vtxTracks, double trkMass) ;
+    double calcMass(std::vector<Trk::VxTrackAtVertex >* vtxTracks, double trkMass) ;
 
  private:
    

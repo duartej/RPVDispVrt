@@ -109,7 +109,7 @@ StatusCode RPVDispVrt::execute() {
   secVertices->setStore(secVerticesAux);
   
   /// test - copied from tutorial
-  
+  /*  
   const xAOD::JetContainer* jets(0);
   sc = evtStore()->retrieve(jets,"AntiKt4LCTopoJets");
   if (sc.isFailure()) msg(MSG::ERROR)<<"Unable to retrieve jet collection."<<endreq;
@@ -130,14 +130,12 @@ StatusCode RPVDispVrt::execute() {
     //myDecoration(*newJet) = 5.0;
     
   } // end for loop over jets
-  
+ 
    //example record to storegate: you must record both the container and the auxcontainer
   CHECK( evtStore()->record(goodJets,"GoodJets") );
-  CHECK( evtStore()->record(goodJetsAux,"GoodJetsAux.") );
+  CHECK( evtStore()->record(goodJetsAux,"GoodJetsAux.") ); 
+  */ 
   
-  
-  
-
   /// retrieve TrackParticleContainer 
   const xAOD::TrackParticleContainer* trkColl(0);
   sc = evtStore()->retrieve(trkColl,m_trackCollName);
@@ -146,23 +144,23 @@ StatusCode RPVDispVrt::execute() {
 
   //////////////////////////////////////////
 
-  xAOD::TrackParticleContainer* selectedTrkColl = new xAOD::TrackParticleContainer;
-  xAOD::TrackParticleAuxContainer* selectedTrkCollAux = new xAOD::TrackParticleAuxContainer;
+  xAOD::TrackParticleContainer* selectedTrkColl = new xAOD::TrackParticleContainer();
+  xAOD::TrackParticleAuxContainer* selectedTrkCollAux = new xAOD::TrackParticleAuxContainer();
   selectedTrkColl->setStore(selectedTrkCollAux);
 
   xAOD::TrackParticleContainer::const_iterator i_trk  = trkColl->begin();
-  
 
   int trkCount = 0;
   std::vector<int> indices;
   indices.clear();
-
 
   for (; i_trk != trkColl->end() ; ++i_trk) {
     const xAOD::TrackParticle*  trk = (*i_trk);
     //    xAOD::TrackParticle*  trk = const_cast<xAOD::TrackParticle*>(*i_trk);
     if (m_useAllPrimVtx) {
       if (m_trkTool->decision(*trk,primVertices)) {
+	msg(MSG::INFO)<<"        --> SelectedTrackIndex   "<<selectedTrkColl->size()
+		      << ", TrackParticleIndex = " << std::distance(trkColl->begin(), i_trk) << endreq;
 	indices.push_back(trkCount);
 	xAOD::TrackParticle* newTrk = new xAOD::TrackParticle;
 	newTrk->makePrivateStore(*trk);
@@ -172,9 +170,10 @@ StatusCode RPVDispVrt::execute() {
 	// {
 	//	trk->auxdata<bool>("isDVselected")=false;
 	// }
-      
     } else {
       if (m_trkTool->decision(*trk,pVtx)) {
+	msg(MSG::INFO)<<"        --> SelectedTrackIndex   "<<selectedTrkColl->size()
+		      << ", TrackParticleIndex = " << std::distance(trkColl->begin(), i_trk) << endreq;
 	////	trk->auxdata<bool>("isDVselected")=true;	
 	indices.push_back(trkCount);
 	xAOD::TrackParticle* newTrk = new xAOD::TrackParticle;
@@ -182,45 +181,58 @@ StatusCode RPVDispVrt::execute() {
 	//	trk->auxdata<bool>("isDVselected")=true;
 	selectedTrkColl->push_back(newTrk);
 	//	selectedTrkColl->push_back(const_cast<xAOD::TrackParticle*>(trk));	
-	//  selectedTrkColl->push_back(*trk);
-	///	selectedTrkColl.push_back(trk);
+	//      selectedTrkColl->push_back(*trk);
+	//      selectedTrkColl.push_back(trk);
       } //else 
 	//{
-	
 	//trk->auxdata<bool>("isDVselected")=false;
 	// }
-      
     }
-    
     trkCount++;
-    
   }
 
-  
-
-    msg(MSG::INFO)<<"Size of selected track collection is "<<selectedTrkColl->size()<<endreq;
+  msg(MSG::INFO)<<"Size of selected track collection is "<<selectedTrkColl->size()<<endreq;
 
   sc = m_vtxTool->findVertices(secVertices,selectedTrkColl);
-  
   if (sc.isFailure()) msg(MSG::ERROR)<<"Making vertices had some problem"<<endreq;
   else msg(MSG::INFO)<<"Found "<<secVertices->size()<<" vertices"<<endreq;
-  
- 
-  //     sc = m_vtxClean->cleanupVertices(secVertices,selectedTrkColl);
-  // if (sc.isFailure()) msg(MSG::ERROR)<<"Cleanup vertices had some problem"<<endreq;
+   
+  sc = m_vtxClean->cleanupVertices(secVertices,selectedTrkColl);
+  if (sc.isFailure()) msg(MSG::ERROR)<<"Cleanup vertices had some problem"<<endreq;
 
-  
- /**
-  if (m_materialMapOnly) secVertices = m_vtxSelector->selectForMaterialMap(secVertices);
+  msg(MSG::INFO)<<"Number of Secondary Vertices : "<<secVertices->size()<<endreq;
 
+  for (unsigned int i=0; i<secVertices->size(); ++i) {
+   
+    AmgVector(3) vertexPos;
+    vertexPos=secVertices->at(i)->position();
+
+    msg(MSG::INFO)<<" vertexMassPionHypo = "<< secVertices->at(i)->auxdata<double>("massPionHypo")/1000
+		  <<" GeV, (x, y, z) = ( "  <<vertexPos(0)<<", "<<vertexPos(1)<<", "<<vertexPos(2)<<" )"<<endreq;
+
+    msg(MSG::INFO)<<"After cleanup trackIndices :"<< secVertices->at(i)->auxdata<std::vector<long int> >("trackIndices")
+		  <<endreq;    
+    //    msg(MSG::INFO)<<"After cleanup trackIndices :"<< secVertices->at(i)->nTrackParticles()
+    //		  <<endreq;    
+    
+    //    for(int j=0;j<secVertices->at(i)->nTrackParticles();j++){
+    //      std::cout << "hiotono Track  "<<secVertices->at(i)->auxdata< std::vector< Trk::VxTrackAtVertex > >("vxTrackAtVertex").at(j) << std::endl;
+    //    }
+  }
+
+  //  for(int ii=0; ii<SelTrk.size() ; ii++) {
+  //    msg(MSG::INFO)<<"track "<<SelTrk.at(ii)<<" : TrkAtVrt (Phi, Theta, 1/p) = ("
+  //		  <<TrkAtVrt[ii][0]<<", "<<TrkAtVrt[ii][1]<<", "<<TrkAtVrt[ii][2]<<")"<<endreq;
+  //  }
+  //  msg(MSG::INFO)<<" vertexMassPionHypo = "<<newVertex->auxdata<double>("massPionHypo")/1000<<" GeV, (x, y, z) = ( "
+  //		<<vertex(0)<<", "<<vertex(1)<<", "<<vertex(2)<<" )"<<endreq;
+
+  /*
+    if (m_materialMapOnly) secVertices = m_vtxSelector->selectForMaterialMap(secVertices);
   if (m_gt2trkOnly) secVertices = m_vtxSelector->selectGT2Trk(secVertices);
-
-
-
+  */
 
   //-----End of post-processing-----//
-
-  */
 
   ///  sc = evtStore()->record(secVertices,m_secVtxName);
   sc = evtStore()->record(secVertices,"RPVSecVertices");
@@ -232,9 +244,8 @@ StatusCode RPVDispVrt::execute() {
   sc = evtStore()->record(secVerticesAux,"RPVSecVerticesAux.");
   if (sc.isFailure()) {
     msg(MSG::ERROR)<<"Failed to record RPVVrt auxcollection"<<endreq;
-  } 
+  }
 
-  
   sc = evtStore()->record(selectedTrkColl,"RPVSelectedTracks");
   if (sc.isFailure()) {
     msg(MSG::ERROR)<<"Failed to record RPVSelectedTracks"<<endreq;
@@ -247,7 +258,6 @@ StatusCode RPVDispVrt::execute() {
 }
 
 StatusCode RPVDispVrt::finalize() {
-
 
   return StatusCode::SUCCESS;
 }
