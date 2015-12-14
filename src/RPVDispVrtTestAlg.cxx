@@ -27,22 +27,35 @@ StatusCode RPVDispVrtTestAlg::execute() {
   msg(MSG::DEBUG)<<"in RPVDispVrtTestAlg::execute()"<<endreq;
 
   const xAOD::VertexContainer* secVertices(0);
-  StatusCode sc = evtStore()->retrieve(secVertices,"RPVSecVertices");
-  if (sc.isFailure()) 
-    msg(MSG::ERROR)<<"Failed to retrieve SecondaryVertices collection"<<endreq;
-  else msg(MSG::INFO)<<"retrieved SecondaryVertices size "<<secVertices->size()<<endreq;  
+  if( evtStore()->retrieve(secVertices,"RPVSecVertices") != StatusCode::SUCCESS )
+  {
+      ATH_MSG_ERROR("Failed to retrieve SecondaryVertices collection");
+  }
+  else
+  {
+     ATH_MSG_INFO("retrieved SecondaryVertices size "<<secVertices->size());  
+  }
 
-  if (secVertices->size() > 0) {
-    const xAOD::Vertex* vert = secVertices->at(0);
-    
-    msg(MSG::INFO)<<"found vertex with position "<<vert->position().x()<<endreq;
-    msg(MSG::INFO)<<" and mass "<<vert->auxdata<double>("mass")<<endreq;
-    
+  for(unsigned int i = 0; i < secVertices->size(); ++i)
+  {
+      const xAOD::Vertex* vert = secVertices->at(i);
+     
+      ATH_MSG_INFO("[" << i << "] vertex with position (x,y,z) =" 
+              <<vert->x() << "," << vert->y() << "," 
+              <<vert->z() << ") [mm]" );
+      ATH_MSG_INFO(" and mass "<<vert->auxdata<float>("mass"));
+      ATH_MSG_INFO(" and the particleLinks.size()" << vert->trackParticleLinks().size() <<
+           " Made of valid links?"  );
+      for(unsigned int k = 0; k < vert->trackParticleLinks().size() ; ++k)
+      {
+          ATH_MSG_INFO("   [" << k << "]-track link, pointer: " << vert->trackParticle(k) );
+      }
   }
   return StatusCode::SUCCESS;
 }
 
-StatusCode RPVDispVrtTestAlg::finalize() {
+StatusCode RPVDispVrtTestAlg::finalize() 
+{
 
   return StatusCode::SUCCESS;
 }
