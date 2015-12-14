@@ -1,26 +1,37 @@
+2015-12-10 Hidetoshi Otono
+	* Add TrkAtVrt information
+
+2015-12-09 Kazuki Motohashi
+	* Add chi2 of tracks into merged vertex (RPVDispVrtVertexCleanup.cxx)
+	* Copy hit-based fake vertex rejection function in VrtSecInclusive to
+	RPVDispVrtVertexSelector.cxx. This considers the IBL as well.
+	* Uncomment a function of final vertices merging which was commented out in
+	the previous revision
+
 2015-08-25 Hidetoshi Otono
 	* Add simpleESD2xAOD.py
 	* Tagged as RPVDispVrt-00-05-16
+
 2015-08-15 Hidetoshi Otono
 	* Removed VxTrackAtVertex for DxAOD, which should be stored in the next step 
 	* Tagged as RPVDispVrt-00-05-15
-	
+
 2015-04-23 Hidetoshi Otono
 	* Tagged as RPVDispVrt-00-05-14, since commit was failed
-	
+
 2015-04-23 Hidetoshi Otono
 	* Added Add VxTrackAtVertex imformation in xAOD::Vertex
 	* Tagged as RPVDispVrt-00-05-11
-	
+
 2014-12-03 Max Goblirsch
 	* Added a mini alg to get the DV candidates into JiveXML
 	* Added joboptions to produce JiveXML with retracking and DV candidates
-	
+
 2014-07-09 Nick Barlow
 	* Add protection for null pointer in RPVVrt*DistAssociationTool to 
 	avoid rare crashes seen in production.
 	* Tag as RPVDispVrt-00-05-10
-	
+
 2014-06-09 Nick Barlow
 	* Remove unwanted evtMax=10 from RPVDV_postInclude.py
 	* Tag as RPVDispVrt-00-05-09
@@ -28,7 +39,7 @@
 2014-05-16 Nick Barlow
 	* Minor fix in RPVNtuple to get correct output filename (from RPVDispVrtFlags) when running with Reco_trf.py
 	* Tag as RPVDispVrt-00-05-08
-	
+
 2014-5-14 Nick Barlow, Giovanna Cottin
 	* Modify RPVDispVrtTrackSelector, tighten (default) cut on tracks, to reject tracks with zero TRT hits and <2 Pix hits
 	(was, reject tracks with zero TRT hits and zero Pix hits and pT<2GeV).
@@ -36,7 +47,7 @@
 
 2014-05-08 Nick Barlow
 	* Add python/RPVDispVrtFlags.py share/RPVDV_preInclude.py share/RPVDV_postInclude.py  to enable running via Reco_trf.py
-	
+
 
 2014-04-30 Nick Barlow
 	* Even more jet variables, ("ActiveArea" 

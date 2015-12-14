@@ -42,7 +42,7 @@ topSequence.RPVDispVrt.OutputLevel=DEBUG
 
 from RPVDispVrt.RPVDispVrtConf import RPVDispVrtTrackSelector
 ToolSvc += RPVDispVrtTrackSelector()
-ToolSvc.RPVDispVrtTrackSelector.TrkChi2Cut = 50.0
+#ToolSvc.RPVDispVrtTrackSelector.TrkChi2Cut = 50.0
 ToolSvc.RPVDispVrtTrackSelector.TrkPtCut = 1000.0
 ToolSvc.RPVDispVrtTrackSelector.CutSctHits = 2 #nonzero : automatic removal of TRTStandAlone tracks
 ToolSvc.RPVDispVrtTrackSelector.CutPixelHits = 0
@@ -50,6 +50,7 @@ ToolSvc.RPVDispVrtTrackSelector.CutSharedHits = 1
 ToolSvc.RPVDispVrtTrackSelector.DstFromBeamCut = 2.0 #d0
 ToolSvc.RPVDispVrtTrackSelector.TRTPixCut = RPVDVFlags.DoTRTPixCut()
 
+ToolSvc.RPVDispVrtTrackSelector.OutputLevel = DEBUG
 
 ### track killing for systematics studies
 #ToolSvc.RPVDispVrtTrackSelector.RandomlyKillTracksFracLowEta = 0.03
