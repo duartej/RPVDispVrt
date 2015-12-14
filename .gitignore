@@ -4,3 +4,5 @@ cmt/Makefile
 cmt/version.cmt
 *x86_64-slc6-gcc*
 genConf
+run
+share
