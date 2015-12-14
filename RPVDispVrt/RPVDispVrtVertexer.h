@@ -70,7 +70,8 @@ class RPVDispVrtVertexer : virtual public IAlgTool, virtual public AthAlgTool {
 				    const xAOD::TrackParticleContainer* trkColl);
 
     ///    xAOD::Vertex* refitVertex(xAOD::Vertex* vertex,const xAOD::TrackParticleContainer* trkColl);
-    void refitVertex(xAOD::Vertex* vertex,const xAOD::TrackParticleContainer* trkColl);
+    //void refitVertex(xAOD::Vertex* vertex,const xAOD::TrackParticleContainer* trkColl);
+    StatusCode refitVertex(xAOD::Vertex* vertex,const xAOD::TrackParticleContainer* trkColl);
     virtual StatusCode finalize();
     
     xAOD::Vertex* makeVertex(std::vector<const xAOD::TrackParticle*>  ListBaseTracks,
